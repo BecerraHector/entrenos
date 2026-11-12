@@ -5,6 +5,8 @@ export interface ProgressPoint {
   date: string
   /** Heaviest weight lifted in a completed set. */
   bestWeight: number
+  /** Most reps in a single completed set (useful for bodyweight exercises). */
+  bestReps: number
   /** Sum of reps × weight over completed sets. */
   volume: number
   /** Number of completed sets. */
@@ -27,6 +29,7 @@ export function exerciseProgress(sessions: Session[], exerciseName: string): Pro
     points.push({
       date: session.finishedAt,
       bestWeight: Math.max(...sets.map((s) => s.weight)),
+      bestReps: Math.max(...sets.map((s) => s.reps)),
       volume: sets.reduce((sum, s) => sum + s.reps * s.weight, 0),
       sets: sets.length,
     })
@@ -44,4 +47,10 @@ export function trackedExercises(sessions: Session[]): string[] {
     }
   }
   return [...names.values()].sort((a, b) => a.localeCompare(b))
+}
+
+/** Completed sets and total volume (reps × kg) of one session. */
+export function sessionStats(session: Session): { sets: number; volume: number } {
+  const sets = session.exercises.flatMap((e) => completed(e.sets))
+  return { sets: sets.length, volume: sets.reduce((sum, s) => sum + s.reps * s.weight, 0) }
 }

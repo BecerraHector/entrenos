@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import { makeSession } from './fixtures'
-import { exerciseProgress, trackedExercises } from './progress'
+import { exerciseProgress, sessionStats, trackedExercises } from './progress'
 
 describe('exerciseProgress', () => {
   it('returns best weight and volume per session, oldest first, counting only completed sets', () => {
@@ -20,8 +20,8 @@ describe('exerciseProgress', () => {
     })
     const earlier = makeSession()
     expect(exerciseProgress([later, earlier], 'Bench press')).toEqual([
-      { date: '2026-01-02T11:00:00.000Z', bestWeight: 65, volume: 8 * 60 + 8 * 62.5 + 6 * 65, sets: 3 },
-      { date: '2026-01-09T11:00:00.000Z', bestWeight: 70, volume: 560, sets: 1 },
+      { date: '2026-01-02T11:00:00.000Z', bestWeight: 65, bestReps: 8, volume: 8 * 60 + 8 * 62.5 + 6 * 65, sets: 3 },
+      { date: '2026-01-09T11:00:00.000Z', bestWeight: 70, bestReps: 8, volume: 560, sets: 1 },
     ])
   })
 
@@ -52,5 +52,13 @@ describe('trackedExercises', () => {
       ],
     })
     expect(trackedExercises([a, b])).toEqual(['Bench press', 'Squat'])
+  })
+})
+
+describe('sessionStats', () => {
+  it('counts completed sets and their volume', () => {
+    const session = makeSession()
+    session.exercises[0].sets[2].done = false
+    expect(sessionStats(session)).toEqual({ sets: 2, volume: 8 * 60 + 8 * 62.5 })
   })
 })

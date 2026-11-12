@@ -1,32 +1,85 @@
-# React + TypeScript + Vite
+# Workout Tracker
 
-This template provides a minimal setup to get React working in Vite with HMR and some Oxlint rules.
+A local-first Progressive Web App (PWA) to create workout routines and track them over time. It is designed for a single person on an iPhone: install it from Safari, use it offline, and keep all data on the device.
 
-Currently, two official plugins are available:
+## Features
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+- **Routines**: create, edit, reorder, archive, and delete routines with exercises (target sets and reps, optional notes).
+- **Workouts**: start a routine, log reps and weight per set, and see what you did last time. Progress is saved on every change, so closing the app mid-workout loses nothing.
+- **History**: every finished workout, with duration, completed sets, and volume.
+- **Progress**: chart per exercise of best weight, best reps (for bodyweight exercises), or volume.
+- **Backup**: export everything to a `.json` file (share sheet → *Save to Files* / iCloud Drive) and import it later in **Merge** (no duplicates) or **Replace** mode. A reminder appears when the last backup is older than 14 days.
 
-## React Compiler
+## Tech stack
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+| Concern | Choice |
+| --- | --- |
+| UI | React 19 + TypeScript, built with Vite |
+| Storage | IndexedDB through [Dexie](https://dexie.org) |
+| Offline / install | `vite-plugin-pwa` (service worker + web manifest) |
+| Tests | Vitest + `fake-indexeddb` |
 
-## Expanding the Oxlint configuration
+## Project structure
 
-If you are developing a production application, we recommend enabling type-aware lint rules by installing `oxlint-tsgolint` and editing `.oxlintrc.json`:
-
-```json
-{
-  "$schema": "./node_modules/oxlint/configuration_schema.json",
-  "plugins": ["react", "typescript", "oxc"],
-  "options": {
-    "typeAware": true
-  },
-  "rules": {
-    "react/rules-of-hooks": "error",
-    "react/only-export-components": ["warn", { "allowConstantExport": true }]
-  }
-}
+```
+src/
+  domain/      Pure business rules: model, backup format + validation + merge, progress, session drafts
+  data/        IndexedDB access (Dexie) and the backup import service
+  features/    One folder per screen: routines, workout, history, progress, backup
+  shared/      Router, formatting helpers, and small UI components
 ```
 
-See the [Oxlint rules documentation](https://oxc.rs/docs/guide/usage/linter/rules) for the full list of rules and categories.
+The domain layer has no React or browser dependencies, so it is fully covered by fast unit tests.
+
+## Development
+
+```bash
+npm install
+npm run dev        # http://localhost:5173
+npm test           # unit tests
+npm run lint
+npm run build      # production build in dist/
+npm run preview    # serve the production build
+```
+
+### Try it on your iPhone during development
+
+```bash
+npm run dev -- --host
+```
+
+Open the printed `Network` URL (for example `http://192.168.1.20:5173`) in Safari on an iPhone connected to the same Wi-Fi network. Offline mode and installation need HTTPS, so use a deployed copy for daily use.
+
+## Install on iPhone (permanent)
+
+1. Deploy `dist/` to any static HTTPS host (see below).
+2. Open the URL in **Safari**.
+3. Tap **Share → Add to Home Screen**.
+
+The installed app works offline and keeps its own storage, separate from Safari tabs.
+
+### Deploy to GitHub Pages (free)
+
+Build with the repository name as the base path, then publish `dist/` (for example, with the `gh-pages` branch or a Pages workflow):
+
+```bash
+BASE_PATH=/<repository-name>/ npm run build
+```
+
+Netlify, Vercel, or Cloudflare Pages also work with the default build (`npm run build`, output folder `dist`).
+
+## Keeping your data safe
+
+- Data lives in the browser storage of the installed app on your device. **Deleting the home screen icon deletes its data.**
+- Data belongs to the URL the app was installed from. If you move the app to a new URL or a new iPhone, export a backup first and import it in the new installation.
+- Export a backup regularly (the app reminds you every 14 days) and keep it in iCloud Drive.
+
+## Backup format
+
+Backups are JSON files with a `format` and `version` field:
+
+```json
+{ "format": "workout-tracker-backup", "version": 1, "exportedAt": "…", "routines": [], "sessions": [] }
+```
+
+Imports are validated before anything is written. When the data shape changes in the future, bump `BACKUP_VERSION` in `src/domain/backup.ts` and add a migration so older backups stay importable.
