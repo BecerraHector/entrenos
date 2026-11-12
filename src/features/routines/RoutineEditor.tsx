@@ -1,4 +1,5 @@
 import { useLiveQuery } from 'dexie-react-hooks'
+import { Archive, ArchiveRestore, ChevronDown, ChevronUp, Plus, Trash2 } from 'lucide-react'
 import { useState } from 'react'
 import { db, deleteRoutine, saveRoutine } from '../../data/db'
 import { createId, type Routine, type RoutineExercise } from '../../domain/model'
@@ -67,7 +68,7 @@ function RoutineForm({ existing }: { existing?: Routine }) {
   }
 
   return (
-    <Screen title={existing ? 'Editar rutina' : 'Nueva rutina'} back="#/">
+    <Screen eyebrow={existing ? 'Ajustar' : 'Crear'} title={existing ? 'Editar rutina' : 'Nueva rutina'} back="#/">
       <form
         className="form"
         onSubmit={(event) => {
@@ -87,7 +88,8 @@ function RoutineForm({ existing }: { existing?: Routine }) {
         <h2>Ejercicios</h2>
         <ol className="exercise-editor">
           {exercises.map((exercise, index) => (
-            <li key={exercise.id} className="card column">
+            <li key={exercise.id} className="card column exercise-card">
+              <span className="exercise-index" aria-hidden="true">{String(index + 1).padStart(2, '0')}</span>
               <input
                 aria-label={`Nombre del ejercicio ${index + 1}`}
                 value={exercise.name}
@@ -111,21 +113,21 @@ function RoutineForm({ existing }: { existing?: Routine }) {
                 placeholder="Notas (opcional)"
               />
               <div className="row end">
-                <button type="button" className="btn small" onClick={() => move(index, -1)} disabled={index === 0} aria-label="Subir">
-                  ↑
+                <button type="button" className="icon-btn" onClick={() => move(index, -1)} disabled={index === 0} aria-label="Subir">
+                  <ChevronUp size={20} strokeWidth={2.5} />
                 </button>
-                <button type="button" className="btn small" onClick={() => move(index, 1)} disabled={index === exercises.length - 1} aria-label="Bajar">
-                  ↓
+                <button type="button" className="icon-btn" onClick={() => move(index, 1)} disabled={index === exercises.length - 1} aria-label="Bajar">
+                  <ChevronDown size={20} strokeWidth={2.5} />
                 </button>
-                <button type="button" className="btn small danger" onClick={() => setExercises(exercises.filter((_, i) => i !== index))}>
-                  Quitar
+                <button type="button" className="icon-btn danger" onClick={() => setExercises(exercises.filter((_, i) => i !== index))} aria-label={`Quitar ejercicio ${index + 1}`}>
+                  <Trash2 size={18} strokeWidth={2.25} />
                 </button>
               </div>
             </li>
           ))}
         </ol>
-        <button type="button" className="btn" onClick={() => setExercises([...exercises, newExercise()])}>
-          + Agregar ejercicio
+        <button type="button" className="btn dashed" onClick={() => setExercises([...exercises, newExercise()])}>
+          <Plus size={18} strokeWidth={2.75} /> Agregar ejercicio
         </button>
 
         {error && <p className="error">{error}</p>}
@@ -135,10 +137,11 @@ function RoutineForm({ existing }: { existing?: Routine }) {
         {existing && (
           <>
             <button type="button" className="btn" onClick={() => save(!existing.archived)}>
+              {existing.archived ? <ArchiveRestore size={18} /> : <Archive size={18} />}
               {existing.archived ? 'Desarchivar' : 'Archivar'}
             </button>
             <button type="button" className="btn danger" onClick={remove}>
-              Eliminar rutina
+              <Trash2 size={18} /> Eliminar rutina
             </button>
           </>
         )}

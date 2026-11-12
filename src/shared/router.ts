@@ -5,13 +5,14 @@ export type Route =
   | { name: 'routine-edit'; id?: string }
   | { name: 'workout'; routineId: string }
   | { name: 'history' }
-  | { name: 'session'; id: string }
+  | { name: 'session'; id: string; celebrate?: true }
   | { name: 'progress' }
   | { name: 'backup' }
 
 /** Hash-based routes (`#/history`) so the app works on any static host and offline. */
 export function parseHash(hash: string): Route {
-  const [section, id, action] = hash.replace(/^#\/?/, '').split('/').map(decodeURIComponent)
+  const [path, query = ''] = hash.replace(/^#\/?/, '').split('?')
+  const [section, id, action] = path.split('/').map(decodeURIComponent)
   switch (section) {
     case 'routines':
       if (id === 'new') return { name: 'routine-edit' }
@@ -20,7 +21,8 @@ export function parseHash(hash: string): Route {
     case 'workout':
       return id ? { name: 'workout', routineId: id } : { name: 'routines' }
     case 'history':
-      return id ? { name: 'session', id } : { name: 'history' }
+      if (!id) return { name: 'history' }
+      return new URLSearchParams(query).get('done') === '1' ? { name: 'session', id, celebrate: true } : { name: 'session', id }
     case 'progress':
       return { name: 'progress' }
     case 'backup':

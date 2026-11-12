@@ -10,6 +10,7 @@ describe('parseHash', () => {
     ['#/workout/abc', { name: 'workout', routineId: 'abc' }],
     ['#/history', { name: 'history' }],
     ['#/history/s1', { name: 'session', id: 's1' }],
+    ['#/history/s1?done=1', { name: 'session', id: 's1', celebrate: true }],
     ['#/progress', { name: 'progress' }],
     ['#/backup', { name: 'backup' }],
     ['#/unknown', { name: 'routines' }],

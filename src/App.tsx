@@ -1,3 +1,4 @@
+import { CalendarDays, Dumbbell, Save, TrendingUp } from 'lucide-react'
 import { BackupScreen } from './features/backup/BackupScreen'
 import { HistoryList } from './features/history/HistoryList'
 import { SessionDetail } from './features/history/SessionDetail'
@@ -8,10 +9,10 @@ import { WorkoutScreen } from './features/workout/WorkoutScreen'
 import { useRoute, type Route } from './shared/router'
 
 const TABS = [
-  { href: '#/', label: 'Rutinas', icon: '🏋️', match: ['routines', 'routine-edit', 'workout'] },
-  { href: '#/history', label: 'Historial', icon: '🗓️', match: ['history', 'session'] },
-  { href: '#/progress', label: 'Progreso', icon: '📈', match: ['progress'] },
-  { href: '#/backup', label: 'Backup', icon: '💾', match: ['backup'] },
+  { href: '#/', label: 'Rutinas', Icon: Dumbbell, match: ['routines', 'routine-edit', 'workout'] },
+  { href: '#/history', label: 'Historial', Icon: CalendarDays, match: ['history', 'session'] },
+  { href: '#/progress', label: 'Progreso', Icon: TrendingUp, match: ['progress'] },
+  { href: '#/backup', label: 'Backup', Icon: Save, match: ['backup'] },
 ]
 
 function renderRoute(route: Route) {
@@ -25,7 +26,7 @@ function renderRoute(route: Route) {
     case 'history':
       return <HistoryList />
     case 'session':
-      return <SessionDetail id={route.id} />
+      return <SessionDetail id={route.id} celebrate={route.celebrate === true} />
     case 'progress':
       return <ProgressScreen />
     case 'backup':
@@ -35,16 +36,23 @@ function renderRoute(route: Route) {
 
 export function App() {
   const route = useRoute()
+  // A new key per screen replays the entrance animation on every navigation.
+  const routeKey = JSON.stringify(route)
   return (
     <div className="app">
-      {renderRoute(route)}
+      <div key={routeKey} className="route">
+        {renderRoute(route)}
+      </div>
       <nav className="tabbar">
-        {TABS.map((tab) => (
-          <a key={tab.href} href={tab.href} className={tab.match.includes(route.name) ? 'active' : ''} aria-current={tab.match.includes(route.name) ? 'page' : undefined}>
-            <span aria-hidden="true">{tab.icon}</span>
-            {tab.label}
-          </a>
-        ))}
+        {TABS.map(({ href, label, Icon, match }) => {
+          const active = match.includes(route.name)
+          return (
+            <a key={href} href={href} className={active ? 'active' : ''} aria-current={active ? 'page' : undefined}>
+              <Icon size={24} strokeWidth={active ? 2.5 : 2} aria-hidden="true" />
+              {label}
+            </a>
+          )
+        })}
       </nav>
     </div>
   )

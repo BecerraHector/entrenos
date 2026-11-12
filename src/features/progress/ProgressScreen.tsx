@@ -1,9 +1,10 @@
 import { useLiveQuery } from 'dexie-react-hooks'
+import { TrendingUp } from 'lucide-react'
 import { useState } from 'react'
 import { db } from '../../data/db'
 import { exerciseProgress, trackedExercises, type ProgressPoint } from '../../domain/progress'
 import { formatDate, formatNumber, plural } from '../../shared/format'
-import { EmptyState, Screen } from '../../shared/ui'
+import { CountUp, EmptyState, Screen } from '../../shared/ui'
 import { LineChart } from './LineChart'
 
 type Metric = 'bestWeight' | 'bestReps' | 'volume'
@@ -24,7 +25,7 @@ export function ProgressScreen() {
   if (exercises.length === 0) {
     return (
       <Screen title="Progreso">
-        <EmptyState title="Todavía no hay datos">
+        <EmptyState title="Todavía no hay datos" icon={<TrendingUp size={40} strokeWidth={2} />}>
           <p className="muted">Completa un entrenamiento y aquí verás tu progreso por ejercicio.</p>
         </EmptyState>
       </Screen>
@@ -41,7 +42,7 @@ export function ProgressScreen() {
   const change = latest[metric] - first[metric]
 
   return (
-    <Screen title="Progreso">
+    <Screen eyebrow="Más fuerte cada día" title="Progreso">
       <label className="field">
         <span>Ejercicio</span>
         <select value={exercise} onChange={(e) => setSelected(e.target.value)}>
@@ -59,13 +60,13 @@ export function ProgressScreen() {
       </div>
 
       <div className="stats">
-        <Stat label="Último" value={`${formatNumber(latest[metric])} ${unit}`} />
-        <Stat label="Mejor" value={`${formatNumber(Math.max(...points.map((p) => p[metric])))} ${unit}`} />
-        <Stat label="Cambio" value={`${change > 0 ? '+' : ''}${formatNumber(change)} ${unit}`} />
+        <Stat label="Último" value={latest[metric]} unit={unit} />
+        <Stat label="Mejor" value={Math.max(...points.map((p) => p[metric]))} unit={unit} />
+        <Stat label="Cambio" value={change} unit={unit} signed />
       </div>
 
-      <div className="card">
-        <LineChart points={points.map((p) => ({ date: p.date, value: p[metric] }))} unit={unit} />
+      <div className="card chart-card">
+        <LineChart key={`${exercise}-${metric}`} points={points.map((p) => ({ date: p.date, value: p[metric] }))} unit={unit} />
       </div>
 
       <h2>Sesiones ({points.length})</h2>
@@ -83,11 +84,16 @@ export function ProgressScreen() {
   )
 }
 
-function Stat({ label, value }: { label: string; value: string }) {
+function Stat({ label, value, unit, signed = false }: { label: string; value: number; unit: string; signed?: boolean }) {
+  const tone = signed && value > 0 ? ' up' : signed && value < 0 ? ' down' : ''
   return (
-    <div className="stat">
-      <span className="muted small">{label}</span>
-      <strong>{value}</strong>
+    <div className={`stat${tone}`}>
+      <span className="stat-label">{label}</span>
+      <strong>
+        {signed && value > 0 ? '+' : signed && value < 0 ? '−' : ''}
+        <CountUp key={value} value={Math.abs(value)} />
+        <small> {unit}</small>
+      </strong>
     </div>
   )
 }

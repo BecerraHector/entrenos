@@ -1,10 +1,11 @@
+import { Check, Flag, History, Minus, Plus, X } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { clearDraft, db, getDraft, lastSessionFor, saveDraft, saveSession, type WorkoutDraft } from '../../data/db'
 import { createId, type ExerciseLog, type Routine, type Session, type SetLog } from '../../domain/model'
 import { buildSessionDraft } from '../../domain/session'
 import { formatDate, formatSet } from '../../shared/format'
 import { go } from '../../shared/router'
-import { NumberInput, Screen } from '../../shared/ui'
+import { NumberInput, ProgressRing, Screen } from '../../shared/ui'
 
 interface Loaded {
   routine: Routine
@@ -75,7 +76,7 @@ function ActiveWorkout({ routine, previous, draft: initial }: Loaded) {
     if (draft.notes?.trim()) session.notes = draft.notes.trim()
     await saveSession(session)
     await clearDraft()
-    go(`/history/${session.id}`)
+    go(`/history/${session.id}?done=1`)
   }
 
   async function discard() {
@@ -85,18 +86,34 @@ function ActiveWorkout({ routine, previous, draft: initial }: Loaded) {
   }
 
   return (
-    <Screen title={routine.name} back="#/">
-      <p className="muted">
-        Iniciado el {formatDate(draft.startedAt)} · {doneSets}/{totalSets} series hechas
-      </p>
+    <Screen
+      eyebrow="Entrenando"
+      title={routine.name}
+      back="#/"
+      action={
+        <ProgressRing progress={totalSets ? doneSets / totalSets : 0} size={58}>
+          <strong>{doneSets}</strong>
+          <span>/{totalSets}</span>
+        </ProgressRing>
+      }
+    >
+      <p className="muted small">Iniciado el {formatDate(draft.startedAt)}</p>
       {draft.exercises.map((exercise, ei) => {
         const last = previous?.exercises.find((e) => e.exerciseId === exercise.exerciseId)
         const notes = routine.exercises.find((e) => e.id === exercise.exerciseId)?.notes
         return (
-          <section key={exercise.exerciseId} className="card column">
+          <section
+            key={exercise.exerciseId}
+            className={`card column exercise-log stagger${exercise.sets.every((s) => s.done) ? ' all-done' : ''}`}
+            style={{ ['--i' as string]: ei }}
+          >
             <h2>{exercise.name}</h2>
             {notes && <p className="muted">{notes}</p>}
-            {last && <p className="muted small">La última vez: {last.sets.filter((s) => s.done).map((s) => formatSet(s.reps, s.weight)).join(', ') || '—'}</p>}
+            {last && (
+              <p className="last-time">
+                <History size={14} aria-hidden="true" /> La última vez: {last.sets.filter((s) => s.done).map((s) => formatSet(s.reps, s.weight)).join(', ') || '—'}
+              </p>
+            )}
             <div className="set-grid">
               <span className="set-head">Serie</span>
               <span className="set-head">Reps</span>
@@ -113,24 +130,24 @@ function ActiveWorkout({ routine, previous, draft: initial }: Loaded) {
                     aria-pressed={set.done}
                     onClick={() => updateSet(ei, si, { done: !set.done })}
                   >
-                    ✓
+                    <Check size={22} strokeWidth={3} />
                   </button>
                 </div>
               ))}
             </div>
             <div className="row end">
               <button
-                className="btn small"
+                className="btn small ghost"
                 disabled={exercise.sets.length <= 1}
                 onClick={() => updateExercise(ei, (e) => ({ ...e, sets: e.sets.slice(0, -1) }))}
               >
-                − Serie
+                <Minus size={16} strokeWidth={2.75} /> Serie
               </button>
               <button
-                className="btn small"
+                className="btn small ghost"
                 onClick={() => updateExercise(ei, (e) => ({ ...e, sets: [...e.sets, { ...(e.sets.at(-1) ?? { reps: 0, weight: 0 }), done: false }] }))}
               >
-                + Serie
+                <Plus size={16} strokeWidth={2.75} /> Serie
               </button>
             </div>
           </section>
@@ -140,11 +157,11 @@ function ActiveWorkout({ routine, previous, draft: initial }: Loaded) {
         <span>Notas (opcional)</span>
         <textarea rows={3} value={draft.notes ?? ''} onChange={(e) => commit({ ...draft, notes: e.target.value })} placeholder="¿Cómo te sentiste?" />
       </label>
-      <button className="btn primary" onClick={finish}>
-        Terminar entrenamiento
+      <button className="btn primary big" onClick={finish}>
+        <Flag size={20} strokeWidth={2.5} /> Terminar entrenamiento
       </button>
-      <button className="btn danger" onClick={discard}>
-        Descartar entrenamiento
+      <button className="btn danger ghost" onClick={discard}>
+        <X size={18} strokeWidth={2.5} /> Descartar entrenamiento
       </button>
     </Screen>
   )

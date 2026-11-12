@@ -27,3 +27,15 @@ export function parseNumber(text: string): number {
 
 /** "1 serie", "3 series". Works for the Spanish nouns used in the UI. */
 export const plural = (count: number, word: string) => `${count} ${word}${count === 1 ? '' : 's'}`
+
+const dayFormat = new Intl.DateTimeFormat('es', { day: 'numeric' })
+const monthFormat = new Intl.DateTimeFormat('es', { month: 'short' })
+
+/** Day of month and short month name, for calendar-style date badges. */
+export const formatDayMonth = (iso: string) => ({
+  day: dayFormat.format(new Date(iso)),
+  month: monthFormat.format(new Date(iso)).replace('.', ''),
+})
+
+export const durationMinutes = (session: Session) =>
+  Math.max(0, Math.round((Date.parse(session.finishedAt) - Date.parse(session.startedAt)) / 60000))

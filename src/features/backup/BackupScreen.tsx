@@ -1,4 +1,5 @@
 import { useLiveQuery } from 'dexie-react-hooks'
+import { Download, HardDrive, ShieldCheck, Upload } from 'lucide-react'
 import { useEffect, useRef, useState, type ChangeEvent } from 'react'
 import { importBackup, type ImportMode } from '../../data/backupService'
 import { getLastExportAt, readAllData, setLastExportAt } from '../../data/db'
@@ -65,11 +66,13 @@ export function BackupScreen() {
   }
 
   return (
-    <Screen title="Backup">
+    <Screen eyebrow="Tus datos, seguros" title="Backup">
       {message && <p className={message.kind === 'ok' ? 'notice' : 'error'}>{message.text}</p>}
 
       <section className="card column">
-        <h2>Exportar</h2>
+        <h2>
+          <Download size={20} strokeWidth={2.5} aria-hidden="true" /> Exportar
+        </h2>
         <p className="muted">
           Guarda todas tus rutinas y entrenamientos en un archivo. En el iPhone, elige <strong>Guardar en Archivos</strong> (iCloud Drive) en el menú de compartir.
         </p>
@@ -77,12 +80,14 @@ export function BackupScreen() {
           {lastExportAt ? `Último backup: ${formatDate(lastExportAt)}` : lastExportAt === null ? 'Aún no hay backups.' : ''}
         </p>
         <button className="btn primary" onClick={exportData} disabled={!data}>
-          Exportar datos
+          <Download size={18} strokeWidth={2.5} /> Exportar datos
         </button>
       </section>
 
       <section className="card column">
-        <h2>Importar</h2>
+        <h2>
+          <Upload size={20} strokeWidth={2.5} aria-hidden="true" /> Importar
+        </h2>
         <p className="muted">Carga un archivo de backup. Se verifica antes de modificar cualquier dato.</p>
         <fieldset className="radio-group">
           <label>
@@ -100,12 +105,14 @@ export function BackupScreen() {
         </fieldset>
         <input ref={fileInput} type="file" accept="application/json,.json" hidden onChange={onFile} />
         <button className="btn" onClick={() => fileInput.current?.click()}>
-          Importar datos
+          <Upload size={18} strokeWidth={2.5} /> Importar datos
         </button>
       </section>
 
       <section className="card column">
-        <h2>Almacenamiento</h2>
+        <h2>
+          {persisted ? <ShieldCheck size={20} strokeWidth={2.5} aria-hidden="true" /> : <HardDrive size={20} strokeWidth={2.5} aria-hidden="true" />} Almacenamiento
+        </h2>
         {persisted === undefined ? (
           <p className="muted">Este navegador no admite almacenamiento persistente.</p>
         ) : persisted ? (

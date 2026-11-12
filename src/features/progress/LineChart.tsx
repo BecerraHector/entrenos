@@ -1,3 +1,4 @@
+import { useId } from 'react'
 import { formatNumber, formatShortDate } from '../../shared/format'
 
 export interface ChartPoint {
@@ -9,8 +10,9 @@ const W = 320
 const H = 180
 const PAD = { top: 16, right: 16, bottom: 28, left: 44 }
 
-/** Small dependency-free SVG line chart, spaced by session order. */
+/** Small dependency-free SVG line chart, spaced by session order. The line draws itself on mount. */
 export function LineChart({ points, unit }: { points: ChartPoint[]; unit: string }) {
+  const gradientId = useId()
   if (points.length === 0) return null
   const values = points.map((p) => p.value)
   let min = Math.min(...values)
@@ -23,10 +25,18 @@ export function LineChart({ points, unit }: { points: ChartPoint[]; unit: string
   const innerH = H - PAD.top - PAD.bottom
   const x = (i: number) => PAD.left + (points.length === 1 ? innerW / 2 : (i / (points.length - 1)) * innerW)
   const y = (v: number) => PAD.top + innerH - ((v - min) / (max - min)) * innerH
-  const path = points.map((p, i) => `${i === 0 ? 'M' : 'L'}${x(i).toFixed(1)},${y(p.value).toFixed(1)}`).join(' ')
+  const line = points.map((p, i) => `${i === 0 ? 'M' : 'L'}${x(i).toFixed(1)},${y(p.value).toFixed(1)}`).join(' ')
+  const baseline = PAD.top + innerH
+  const area = `${line} L${x(points.length - 1).toFixed(1)},${baseline} L${x(0).toFixed(1)},${baseline} Z`
 
   return (
     <svg className="chart" viewBox={`0 0 ${W} ${H}`} role="img" aria-label={`Gráfico de progreso en ${unit}`}>
+      <defs>
+        <linearGradient id={gradientId} x1="0" x2="0" y1="0" y2="1">
+          <stop offset="0%" stopColor="var(--lime)" stopOpacity="0.35" />
+          <stop offset="100%" stopColor="var(--lime)" stopOpacity="0" />
+        </linearGradient>
+      </defs>
       {[max, (max + min) / 2, min].map((v) => (
         <g key={v}>
           <line className="chart-grid" x1={PAD.left} x2={W - PAD.right} y1={y(v)} y2={y(v)} />
@@ -35,9 +45,17 @@ export function LineChart({ points, unit }: { points: ChartPoint[]; unit: string
           </text>
         </g>
       ))}
-      <path className="chart-line" d={path} />
+      {points.length > 1 && <path className="chart-area" d={area} fill={`url(#${gradientId})`} />}
+      <path className="chart-line" d={line} pathLength={1} />
       {points.map((p, i) => (
-        <circle key={i} className="chart-dot" cx={x(i)} cy={y(p.value)} r={3.5}>
+        <circle
+          key={i}
+          className={`chart-dot${i === points.length - 1 ? ' last' : ''}`}
+          cx={x(i)}
+          cy={y(p.value)}
+          r={i === points.length - 1 ? 5 : 3.5}
+          style={{ ['--i' as string]: i }}
+        >
           <title>{`${formatShortDate(p.date)}: ${formatNumber(p.value)} ${unit}`}</title>
         </circle>
       ))}
