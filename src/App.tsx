@@ -6,6 +6,7 @@ import { ProgressScreen } from './features/progress/ProgressScreen'
 import { RoutineEditor } from './features/routines/RoutineEditor'
 import { RoutineList } from './features/routines/RoutineList'
 import { WorkoutScreen } from './features/workout/WorkoutScreen'
+import { ErrorBoundary } from './shared/ErrorScreens'
 import { useRoute, type Route } from './shared/router'
 
 const TABS = [
@@ -40,9 +41,10 @@ export function App() {
   const routeKey = JSON.stringify(route)
   return (
     <div className="app">
-      <div key={routeKey} className="route">
-        {renderRoute(route)}
-      </div>
+      {/* Keyed per screen: navigating away from a crashed screen clears the error. */}
+      <ErrorBoundary key={routeKey}>
+        <div className="route">{renderRoute(route)}</div>
+      </ErrorBoundary>
       <nav className="tabbar">
         {TABS.map(({ href, label, Icon, match }) => {
           const active = match.includes(route.name)

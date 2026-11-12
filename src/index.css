@@ -1306,3 +1306,35 @@ input[type='radio'] {
   color: var(--orange);
   cursor: pointer;
 }
+
+/* ------------------------------------------------------------------
+   Fatal error screens
+   ------------------------------------------------------------------ */
+.fatal {
+  min-height: 80dvh;
+  justify-content: center;
+  align-items: stretch;
+  text-align: center;
+  padding-top: calc(32px + env(safe-area-inset-top));
+}
+.fatal-icon {
+  align-self: center;
+  background: var(--danger-soft);
+  color: var(--danger);
+}
+.error-details {
+  color: var(--muted);
+  font-size: 0.85rem;
+  text-align: left;
+}
+.error-details summary {
+  cursor: pointer;
+  padding: 8px 0;
+}
+.error-details code {
+  display: block;
+  padding: 10px;
+  border-radius: var(--radius-sm);
+  background: var(--surface);
+  overflow-wrap: anywhere;
+}
