@@ -130,6 +130,7 @@ export function BackupScreen() {
           </p>
         )}
       </section>
+      <p className="app-version muted small">Workout Tracker v{__APP_VERSION__}</p>
     </Screen>
   )
 }

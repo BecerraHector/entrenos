@@ -5,10 +5,15 @@ import { VitePWA } from 'vite-plugin-pwa'
 // `base` lets the app live in a sub-path, e.g. GitHub Pages: BASE_PATH=/fitnessApp/ npm run build
 export default defineConfig({
   base: process.env.BASE_PATH ?? '/',
+  define: {
+    // Shown in the Backup screen; APP_VERSION overrides it (used by CI or tests).
+    __APP_VERSION__: JSON.stringify(process.env.APP_VERSION ?? process.env.npm_package_version ?? 'dev'),
+  },
   plugins: [
     react(),
     VitePWA({
-      registerType: 'autoUpdate',
+      // Ask before updating instead of reloading by surprise (see UpdatePrompt).
+      registerType: 'prompt',
       includeAssets: ['icon.svg', 'apple-touch-icon.png'],
       manifest: {
         name: 'Workout Tracker',

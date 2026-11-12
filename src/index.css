@@ -1338,3 +1338,51 @@ input[type='radio'] {
   background: var(--surface);
   overflow-wrap: anywhere;
 }
+
+/* ------------------------------------------------------------------
+   Update toast
+   ------------------------------------------------------------------ */
+.toast {
+  position: fixed;
+  left: 50%;
+  bottom: calc(96px + env(safe-area-inset-bottom));
+  z-index: 20;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px 12px;
+  width: calc(100% - 24px);
+  max-width: 480px;
+  padding: 14px 14px 14px 16px;
+  transform: translateX(-50%);
+  border-radius: var(--radius);
+  background: var(--surface-2);
+  border: 1px solid rgba(198, 255, 61, 0.4);
+  box-shadow: 0 16px 40px -12px rgba(0, 0, 0, 0.9);
+  animation: toast-in 380ms var(--ease-spring) both;
+}
+.toast .grow {
+  display: flex;
+  flex-direction: column;
+}
+.toast-icon {
+  flex: none;
+  color: var(--lime);
+}
+.toast-actions {
+  display: flex;
+  gap: 8px;
+  width: 100%;
+}
+.toast-actions .btn {
+  flex: 1;
+}
+.app-version {
+  text-align: center;
+}
+@keyframes toast-in {
+  from {
+    opacity: 0;
+    transform: translate(-50%, 24px);
+  }
+}

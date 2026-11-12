@@ -8,6 +8,7 @@ import { RoutineList } from './features/routines/RoutineList'
 import { WorkoutScreen } from './features/workout/WorkoutScreen'
 import { ErrorBoundary } from './shared/ErrorScreens'
 import { useRoute, type Route } from './shared/router'
+import { UpdatePrompt } from './shared/UpdatePrompt'
 
 const TABS = [
   { href: '#/', label: 'Rutinas', Icon: Dumbbell, match: ['routines', 'routine-edit', 'workout'] },
@@ -45,6 +46,7 @@ export function App() {
       <ErrorBoundary key={routeKey}>
         <div className="route">{renderRoute(route)}</div>
       </ErrorBoundary>
+      <UpdatePrompt />
       <nav className="tabbar">
         {TABS.map(({ href, label, Icon, match }) => {
           const active = match.includes(route.name)
