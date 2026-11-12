@@ -26,7 +26,7 @@ export function LineChart({ points, unit }: { points: ChartPoint[]; unit: string
   const path = points.map((p, i) => `${i === 0 ? 'M' : 'L'}${x(i).toFixed(1)},${y(p.value).toFixed(1)}`).join(' ')
 
   return (
-    <svg className="chart" viewBox={`0 0 ${W} ${H}`} role="img" aria-label={`Progress chart in ${unit}`}>
+    <svg className="chart" viewBox={`0 0 ${W} ${H}`} role="img" aria-label={`Gráfico de progreso en ${unit}`}>
       {[max, (max + min) / 2, min].map((v) => (
         <g key={v}>
           <line className="chart-grid" x1={PAD.left} x2={W - PAD.right} y1={y(v)} y2={y(v)} />

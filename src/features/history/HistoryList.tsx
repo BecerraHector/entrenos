@@ -10,10 +10,10 @@ export function HistoryList() {
   if (!sessions) return null
 
   return (
-    <Screen title="History">
+    <Screen title="Historial">
       {sessions.length === 0 ? (
-        <EmptyState title="No workouts yet">
-          <p className="muted">Finished workouts will show up here.</p>
+        <EmptyState title="Todavía no hay entrenamientos">
+          <p className="muted">Los entrenamientos terminados aparecerán aquí.</p>
         </EmptyState>
       ) : (
         <ul className="list">
@@ -27,7 +27,7 @@ export function HistoryList() {
                     {formatDate(session.finishedAt)} · {formatDuration(session)}
                   </span>
                   <span className="muted small">
-                    {plural(stats.sets, 'set')}{stats.volume > 0 ? ` · ${formatNumber(stats.volume)} kg volume` : ''}
+                    {plural(stats.sets, 'serie')}{stats.volume > 0 ? ` · ${formatNumber(stats.volume)} kg de volumen` : ''}
                   </span>
                 </button>
               </li>

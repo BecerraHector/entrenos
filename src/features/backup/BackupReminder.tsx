@@ -12,7 +12,7 @@ export function BackupReminder() {
   const { days } = status
   return (
     <a className="banner warning" href="#/backup">
-      {days === undefined ? "You haven't backed up your data yet." : `It's been ${days} days since your last backup.`} Tap to export a backup.
+      {days === undefined ? 'Aún no has hecho un backup de tus datos.' : `Han pasado ${days} días desde tu último backup.`} Toca para exportar uno.
     </a>
   )
 }

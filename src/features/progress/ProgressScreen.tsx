@@ -9,9 +9,9 @@ import { LineChart } from './LineChart'
 type Metric = 'bestWeight' | 'bestReps' | 'volume'
 
 const METRICS: Record<Metric, { label: string; unit: string }> = {
-  bestWeight: { label: 'Best weight', unit: 'kg' },
-  bestReps: { label: 'Best reps', unit: 'reps' },
-  volume: { label: 'Volume', unit: 'kg' },
+  bestWeight: { label: 'Mejor peso', unit: 'kg' },
+  bestReps: { label: 'Mejores reps', unit: 'reps' },
+  volume: { label: 'Volumen', unit: 'kg' },
 }
 
 export function ProgressScreen() {
@@ -23,9 +23,9 @@ export function ProgressScreen() {
   const exercises = trackedExercises(sessions)
   if (exercises.length === 0) {
     return (
-      <Screen title="Progress">
-        <EmptyState title="Nothing to show yet">
-          <p className="muted">Complete a workout and your progress per exercise will appear here.</p>
+      <Screen title="Progreso">
+        <EmptyState title="Todavía no hay datos">
+          <p className="muted">Completa un entrenamiento y aquí verás tu progreso por ejercicio.</p>
         </EmptyState>
       </Screen>
     )
@@ -41,9 +41,9 @@ export function ProgressScreen() {
   const change = latest[metric] - first[metric]
 
   return (
-    <Screen title="Progress">
+    <Screen title="Progreso">
       <label className="field">
-        <span>Exercise</span>
+        <span>Ejercicio</span>
         <select value={exercise} onChange={(e) => setSelected(e.target.value)}>
           {exercises.map((name) => (
             <option key={name}>{name}</option>
@@ -59,22 +59,22 @@ export function ProgressScreen() {
       </div>
 
       <div className="stats">
-        <Stat label="Latest" value={`${formatNumber(latest[metric])} ${unit}`} />
-        <Stat label="Best" value={`${formatNumber(Math.max(...points.map((p) => p[metric])))} ${unit}`} />
-        <Stat label="Change" value={`${change > 0 ? '+' : ''}${formatNumber(change)} ${unit}`} />
+        <Stat label="Último" value={`${formatNumber(latest[metric])} ${unit}`} />
+        <Stat label="Mejor" value={`${formatNumber(Math.max(...points.map((p) => p[metric])))} ${unit}`} />
+        <Stat label="Cambio" value={`${change > 0 ? '+' : ''}${formatNumber(change)} ${unit}`} />
       </div>
 
       <div className="card">
         <LineChart points={points.map((p) => ({ date: p.date, value: p[metric] }))} unit={unit} />
       </div>
 
-      <h2>Sessions ({points.length})</h2>
+      <h2>Sesiones ({points.length})</h2>
       <ul className="list compact">
         {[...points].reverse().map((p: ProgressPoint) => (
           <li key={p.date} className="row between">
             <span>{formatDate(p.date)}</span>
             <span className="muted">
-              {plural(p.sets, 'set')} · {formatNumber(p[metric])} {unit}
+              {plural(p.sets, 'serie')} · {formatNumber(p[metric])} {unit}
             </span>
           </li>
         ))}

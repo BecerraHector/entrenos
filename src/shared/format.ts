@@ -1,8 +1,8 @@
 import type { Session } from '../domain/model'
 
-const dateFormat = new Intl.DateTimeFormat(undefined, { weekday: 'short', day: 'numeric', month: 'short', year: 'numeric' })
-const shortDateFormat = new Intl.DateTimeFormat(undefined, { day: 'numeric', month: 'short' })
-const numberFormat = new Intl.NumberFormat(undefined, { maximumFractionDigits: 1 })
+const dateFormat = new Intl.DateTimeFormat('es', { weekday: 'short', day: 'numeric', month: 'short', year: 'numeric' })
+const shortDateFormat = new Intl.DateTimeFormat('es', { day: 'numeric', month: 'short' })
+const numberFormat = new Intl.NumberFormat('es', { maximumFractionDigits: 1 })
 
 export const formatDate = (iso: string) => dateFormat.format(new Date(iso))
 export const formatShortDate = (iso: string) => shortDateFormat.format(new Date(iso))
@@ -25,5 +25,5 @@ export function parseNumber(text: string): number {
   return Number.isFinite(n) && n >= 0 ? n : 0
 }
 
-/** "1 set", "3 sets". */
+/** "1 serie", "3 series". Works for the Spanish nouns used in the UI. */
 export const plural = (count: number, word: string) => `${count} ${word}${count === 1 ? '' : 's'}`

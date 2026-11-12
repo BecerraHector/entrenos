@@ -32,7 +32,7 @@ export function BackupScreen() {
     const file = new File([json], fileName, { type: 'application/json' })
     try {
       if (navigator.canShare?.({ files: [file] })) {
-        await navigator.share({ files: [file], title: 'Workout Tracker backup' })
+        await navigator.share({ files: [file], title: 'Backup de Workout Tracker' })
       } else {
         const url = URL.createObjectURL(file)
         const link = Object.assign(document.createElement('a'), { href: url, download: fileName })
@@ -40,10 +40,10 @@ export function BackupScreen() {
         setTimeout(() => URL.revokeObjectURL(url), 10_000)
       }
       await setLastExportAt(now.toISOString())
-      setMessage({ kind: 'ok', text: `Backup created: ${plural(data.routines.length, 'routine')}, ${plural(data.sessions.length, 'workout')}.` })
+      setMessage({ kind: 'ok', text: `Backup creado: ${plural(data.routines.length, 'rutina')}, ${plural(data.sessions.length, 'entrenamiento')}.` })
     } catch (error) {
       if (error instanceof DOMException && error.name === 'AbortError') return // user closed the share sheet
-      setMessage({ kind: 'error', text: `Could not export: ${error instanceof Error ? error.message : String(error)}` })
+      setMessage({ kind: 'error', text: `No se pudo exportar: ${error instanceof Error ? error.message : String(error)}` })
     }
   }
 
@@ -51,11 +51,11 @@ export function BackupScreen() {
     const file = event.target.files?.[0]
     event.target.value = '' // allow picking the same file again
     if (!file) return
-    if (mode === 'replace' && !confirm('Replace ALL current data with this backup? Anything not in the backup will be lost.')) return
+    if (mode === 'replace' && !confirm('¿Reemplazar TODOS los datos actuales con este backup? Se perderá todo lo que no esté en el backup.')) return
     const result = await importBackup(await file.text(), mode)
     setMessage(
       result.ok
-        ? { kind: 'ok', text: `Import complete. You now have ${plural(result.routines, 'routine')} and ${plural(result.sessions, 'workout')}.` }
+        ? { kind: 'ok', text: `Importación completa. Ahora tienes ${plural(result.routines, 'rutina')} y ${plural(result.sessions, 'entrenamiento')}.` }
         : { kind: 'error', text: result.error },
     )
   }
@@ -69,59 +69,59 @@ export function BackupScreen() {
       {message && <p className={message.kind === 'ok' ? 'notice' : 'error'}>{message.text}</p>}
 
       <section className="card column">
-        <h2>Export</h2>
+        <h2>Exportar</h2>
         <p className="muted">
-          Save all your routines and workouts to a file. On iPhone, choose <strong>Save to Files</strong> (iCloud Drive) in the share sheet.
+          Guarda todas tus rutinas y entrenamientos en un archivo. En el iPhone, elige <strong>Guardar en Archivos</strong> (iCloud Drive) en el menú de compartir.
         </p>
         <p className="small">
-          {lastExportAt ? `Last backup: ${formatDate(lastExportAt)}` : lastExportAt === null ? 'No backup yet.' : ''}
+          {lastExportAt ? `Último backup: ${formatDate(lastExportAt)}` : lastExportAt === null ? 'Aún no hay backups.' : ''}
         </p>
         <button className="btn primary" onClick={exportData} disabled={!data}>
-          Export data
+          Exportar datos
         </button>
       </section>
 
       <section className="card column">
-        <h2>Import</h2>
-        <p className="muted">Load a backup file. The file is checked before anything changes.</p>
+        <h2>Importar</h2>
+        <p className="muted">Carga un archivo de backup. Se verifica antes de modificar cualquier dato.</p>
         <fieldset className="radio-group">
           <label>
             <input type="radio" name="mode" checked={mode === 'merge'} onChange={() => setMode('merge')} />
             <span>
-              <strong>Merge</strong> — keep current data and add what's missing, without duplicates
+              <strong>Combinar</strong>: conserva los datos actuales y agrega lo que falte, sin duplicados
             </span>
           </label>
           <label>
             <input type="radio" name="mode" checked={mode === 'replace'} onChange={() => setMode('replace')} />
             <span>
-              <strong>Replace</strong> — delete current data and use only the backup
+              <strong>Reemplazar</strong>: borra los datos actuales y usa solo el backup
             </span>
           </label>
         </fieldset>
         <input ref={fileInput} type="file" accept="application/json,.json" hidden onChange={onFile} />
         <button className="btn" onClick={() => fileInput.current?.click()}>
-          Import data
+          Importar datos
         </button>
       </section>
 
       <section className="card column">
-        <h2>Storage</h2>
+        <h2>Almacenamiento</h2>
         {persisted === undefined ? (
-          <p className="muted">Persistent storage is not supported by this browser.</p>
+          <p className="muted">Este navegador no admite almacenamiento persistente.</p>
         ) : persisted ? (
-          <p className="muted">Persistent storage is on: the system will not clear your data to free up space.</p>
+          <p className="muted">El almacenamiento persistente está activado: el sistema no borrará tus datos para liberar espacio.</p>
         ) : (
           <>
-            <p className="muted">Ask the system to keep your data even when the device is low on space.</p>
+            <p className="muted">Pide al sistema que conserve tus datos aunque el dispositivo tenga poco espacio.</p>
             <button className="btn" onClick={requestPersistence}>
-              Enable persistent storage
+              Activar almacenamiento persistente
             </button>
           </>
         )}
         {!isStandalone() && (
           <p className="muted small">
-            Tip: install the app with Safari's <strong>Share → Add to Home Screen</strong>. Installed apps keep their data more reliably than
-            open browser tabs.
+            Consejo: instala la app desde Safari con <strong>Compartir → Agregar a inicio</strong>. Las apps instaladas conservan sus datos
+            de forma más confiable que las pestañas del navegador.
           </p>
         )}
       </section>

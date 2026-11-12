@@ -37,8 +37,8 @@ export function WorkoutScreen({ routineId }: { routineId: string }) {
   if (state === undefined) return null
   if (state === null) {
     return (
-      <Screen title="Routine not found" back="#/">
-        <p className="muted">This routine no longer exists.</p>
+      <Screen title="Rutina no encontrada" back="#/">
+        <p className="muted">Esta rutina ya no existe.</p>
       </Screen>
     )
   }
@@ -63,7 +63,7 @@ function ActiveWorkout({ routine, previous, draft: initial }: Loaded) {
   const totalSets = draft.exercises.reduce((n, e) => n + e.sets.length, 0)
 
   async function finish() {
-    if (doneSets === 0 && !confirm('No sets are marked as done. Save the workout anyway?')) return
+    if (doneSets === 0 && !confirm('No hay series marcadas como hechas. ¿Guardar el entrenamiento de todos modos?')) return
     const session: Session = {
       id: createId(),
       routineId: routine.id,
@@ -79,7 +79,7 @@ function ActiveWorkout({ routine, previous, draft: initial }: Loaded) {
   }
 
   async function discard() {
-    if (!confirm('Discard this workout? Nothing will be saved.')) return
+    if (!confirm('¿Descartar este entrenamiento? No se guardará nada.')) return
     await clearDraft()
     go('/')
   }
@@ -87,7 +87,7 @@ function ActiveWorkout({ routine, previous, draft: initial }: Loaded) {
   return (
     <Screen title={routine.name} back="#/">
       <p className="muted">
-        Started {formatDate(draft.startedAt)} · {doneSets}/{totalSets} sets done
+        Iniciado el {formatDate(draft.startedAt)} · {doneSets}/{totalSets} series hechas
       </p>
       {draft.exercises.map((exercise, ei) => {
         const last = previous?.exercises.find((e) => e.exerciseId === exercise.exerciseId)
@@ -96,20 +96,20 @@ function ActiveWorkout({ routine, previous, draft: initial }: Loaded) {
           <section key={exercise.exerciseId} className="card column">
             <h2>{exercise.name}</h2>
             {notes && <p className="muted">{notes}</p>}
-            {last && <p className="muted small">Last time: {last.sets.filter((s) => s.done).map((s) => formatSet(s.reps, s.weight)).join(', ') || '—'}</p>}
+            {last && <p className="muted small">La última vez: {last.sets.filter((s) => s.done).map((s) => formatSet(s.reps, s.weight)).join(', ') || '—'}</p>}
             <div className="set-grid">
-              <span className="set-head">Set</span>
+              <span className="set-head">Serie</span>
               <span className="set-head">Reps</span>
               <span className="set-head">kg</span>
-              <span className="set-head">Done</span>
+              <span className="set-head">Hecha</span>
               {exercise.sets.map((set, si) => (
                 <div key={si} className={`set-row${set.done ? ' done' : ''}`}>
                   <span className="set-number">{si + 1}</span>
-                  <NumberInput label={`${exercise.name} set ${si + 1} reps`} value={set.reps} onChange={(reps) => updateSet(ei, si, { reps: Math.round(reps) })} />
-                  <NumberInput label={`${exercise.name} set ${si + 1} weight`} decimal value={set.weight} onChange={(weight) => updateSet(ei, si, { weight })} />
+                  <NumberInput label={`${exercise.name} serie ${si + 1} reps`} value={set.reps} onChange={(reps) => updateSet(ei, si, { reps: Math.round(reps) })} />
+                  <NumberInput label={`${exercise.name} serie ${si + 1} peso`} decimal value={set.weight} onChange={(weight) => updateSet(ei, si, { weight })} />
                   <button
                     className={`check${set.done ? ' on' : ''}`}
-                    aria-label={`Mark set ${si + 1} as done`}
+                    aria-label={`Marcar serie ${si + 1} como hecha`}
                     aria-pressed={set.done}
                     onClick={() => updateSet(ei, si, { done: !set.done })}
                   >
@@ -124,27 +124,27 @@ function ActiveWorkout({ routine, previous, draft: initial }: Loaded) {
                 disabled={exercise.sets.length <= 1}
                 onClick={() => updateExercise(ei, (e) => ({ ...e, sets: e.sets.slice(0, -1) }))}
               >
-                − Set
+                − Serie
               </button>
               <button
                 className="btn small"
                 onClick={() => updateExercise(ei, (e) => ({ ...e, sets: [...e.sets, { ...(e.sets.at(-1) ?? { reps: 0, weight: 0 }), done: false }] }))}
               >
-                + Set
+                + Serie
               </button>
             </div>
           </section>
         )
       })}
       <label className="field">
-        <span>Notes (optional)</span>
-        <textarea rows={3} value={draft.notes ?? ''} onChange={(e) => commit({ ...draft, notes: e.target.value })} placeholder="How did it feel?" />
+        <span>Notas (opcional)</span>
+        <textarea rows={3} value={draft.notes ?? ''} onChange={(e) => commit({ ...draft, notes: e.target.value })} placeholder="¿Cómo te sentiste?" />
       </label>
       <button className="btn primary" onClick={finish}>
-        Finish workout
+        Terminar entrenamiento
       </button>
       <button className="btn danger" onClick={discard}>
-        Discard workout
+        Descartar entrenamiento
       </button>
     </Screen>
   )

@@ -126,19 +126,19 @@ export function parseBackup(text: string): ParseResult {
   try {
     raw = JSON.parse(text)
   } catch {
-    return { ok: false, error: 'The file is not valid JSON.' }
+    return { ok: false, error: 'El archivo no es un JSON válido.' }
   }
   if (typeof raw !== 'object' || raw === null || (raw as Obj).format !== BACKUP_FORMAT) {
-    return { ok: false, error: 'This file is not a Workout Tracker backup.' }
+    return { ok: false, error: 'Este archivo no es un backup de Workout Tracker.' }
   }
   let file = raw as Obj
   if (typeof file.version !== 'number' || file.version < 1) {
-    return { ok: false, error: 'This file is not a Workout Tracker backup.' }
+    return { ok: false, error: 'Este archivo no es un backup de Workout Tracker.' }
   }
   if (file.version > BACKUP_VERSION) {
     return {
       ok: false,
-      error: 'This backup was created by a newer version of the app. Update the app and try again.',
+      error: 'Este backup se creó con una versión más nueva de la app. Actualiza la app e inténtalo de nuevo.',
     }
   }
   while ((file.version as number) < BACKUP_VERSION) file = migrations[file.version as number](file)
@@ -153,7 +153,7 @@ export function parseBackup(text: string): ParseResult {
       },
     }
   } catch (error) {
-    if (error instanceof InvalidField) return { ok: false, error: `Invalid data in ${error.message}.` }
+    if (error instanceof InvalidField) return { ok: false, error: `Datos inválidos en ${error.message}.` }
     throw error
   }
 }

@@ -1,6 +1,6 @@
 # Workout Tracker
 
-A local-first Progressive Web App (PWA) to create workout routines and track them over time. It is designed for a single person on an iPhone: install it from Safari, use it offline, and keep all data on the device.
+A local-first Progressive Web App (PWA) with a Spanish user interface to create workout routines and track them over time. It is designed for a single person on an iPhone: install it from Safari, use it offline, and keep all data on the device.
 
 ## Features
 

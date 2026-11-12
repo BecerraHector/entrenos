@@ -8,9 +8,9 @@ import { WorkoutScreen } from './features/workout/WorkoutScreen'
 import { useRoute, type Route } from './shared/router'
 
 const TABS = [
-  { href: '#/', label: 'Routines', icon: '🏋️', match: ['routines', 'routine-edit', 'workout'] },
-  { href: '#/history', label: 'History', icon: '🗓️', match: ['history', 'session'] },
-  { href: '#/progress', label: 'Progress', icon: '📈', match: ['progress'] },
+  { href: '#/', label: 'Rutinas', icon: '🏋️', match: ['routines', 'routine-edit', 'workout'] },
+  { href: '#/history', label: 'Historial', icon: '🗓️', match: ['history', 'session'] },
+  { href: '#/progress', label: 'Progreso', icon: '📈', match: ['progress'] },
   { href: '#/backup', label: 'Backup', icon: '💾', match: ['backup'] },
 ]
 

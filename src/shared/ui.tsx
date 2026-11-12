@@ -6,7 +6,7 @@ export function Screen({ title, back, action, children }: { title: string; back?
     <>
       <header className="screen-header">
         {back ? (
-          <a className="back" href={back} aria-label="Back">
+          <a className="back" href={back} aria-label="Volver">
             ‹
           </a>
         ) : null}
@@ -27,6 +27,9 @@ export function EmptyState({ title, children }: { title: string; children?: Reac
   )
 }
 
+/** Spanish-style decimals: 62.5 is shown as "62,5". */
+const toText = (value: number) => (value === 0 ? '' : String(value).replace('.', ','))
+
 interface NumberInputProps {
   value: number
   onChange: (value: number) => void
@@ -37,9 +40,9 @@ interface NumberInputProps {
 
 /** Keeps the raw text while typing so values like "62," are not lost before they are complete. */
 export function NumberInput({ value, onChange, label, decimal = false, className }: NumberInputProps) {
-  const [text, setText] = useState(value === 0 ? '' : String(value))
+  const [text, setText] = useState(toText(value))
   useEffect(() => {
-    if (parseNumber(text) !== value) setText(value === 0 ? '' : String(value))
+    if (parseNumber(text) !== value) setText(toText(value))
     // Only resync when the value changes from outside.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [value])

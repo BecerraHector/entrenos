@@ -12,8 +12,9 @@ export default defineConfig({
       includeAssets: ['icon.svg', 'apple-touch-icon.png'],
       manifest: {
         name: 'Workout Tracker',
-        short_name: 'Workouts',
-        description: 'Track your workout routines over time. Works offline; data stays on your device.',
+        short_name: 'Entrenos',
+        description: 'Registra tus rutinas de ejercicio a lo largo del tiempo. Funciona sin conexión y los datos quedan en tu dispositivo.',
+        lang: 'es',
         theme_color: '#111827',
         background_color: '#111827',
         display: 'standalone',

@@ -27,13 +27,13 @@ describe('parseBackup', () => {
   })
 
   it('rejects text that is not JSON', () => {
-    expect(parseBackup('not json')).toEqual({ ok: false, error: 'The file is not valid JSON.' })
+    expect(parseBackup('not json')).toEqual({ ok: false, error: 'El archivo no es un JSON válido.' })
   })
 
   it('rejects JSON that is not a backup of this app', () => {
     expect(parseBackup('{"hello":1}')).toEqual({
       ok: false,
-      error: 'This file is not a Workout Tracker backup.',
+      error: 'Este archivo no es un backup de Workout Tracker.',
     })
   })
 
@@ -41,7 +41,7 @@ describe('parseBackup', () => {
     const file = { ...createBackup({ routines: [], sessions: [] }, NOW), version: BACKUP_VERSION + 1 }
     expect(parseBackup(JSON.stringify(file))).toEqual({
       ok: false,
-      error: 'This backup was created by a newer version of the app. Update the app and try again.',
+      error: 'Este backup se creó con una versión más nueva de la app. Actualiza la app e inténtalo de nuevo.',
     })
   })
 
@@ -50,7 +50,7 @@ describe('parseBackup', () => {
     const broken = { ...file, routines: [{ ...file.routines[0], exercises: 'nope' }] }
     expect(parseBackup(JSON.stringify(broken))).toEqual({
       ok: false,
-      error: 'Invalid data in routines[0].exercises.',
+      error: 'Datos inválidos en routines[0].exercises.',
     })
   })
 
@@ -60,7 +60,7 @@ describe('parseBackup', () => {
     const file = createBackup({ routines: [], sessions: [session] }, NOW)
     expect(parseBackup(JSON.stringify(file))).toEqual({
       ok: false,
-      error: 'Invalid data in sessions[0].exercises[0].sets[1].reps.',
+      error: 'Datos inválidos en sessions[0].exercises[0].sets[1].reps.',
     })
   })
 })

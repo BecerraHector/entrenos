@@ -27,8 +27,8 @@ export function RoutineList() {
 
   async function start(routine: Routine) {
     if (draft && draft.routineId !== routine.id) {
-      const name = draftRoutine?.name ?? 'another routine'
-      if (!confirm(`You have a workout in progress for "${name}". Discard it and start "${routine.name}"?`)) return
+      const name = draftRoutine?.name ?? 'otra rutina'
+      if (!confirm(`Tienes un entrenamiento en curso de "${name}". ¿Descartarlo y empezar "${routine.name}"?`)) return
       await clearDraft()
     }
     go(`/workout/${routine.id}`)
@@ -39,13 +39,13 @@ export function RoutineList() {
       <button className="card-main" onClick={() => go(`/routines/${routine.id}/edit`)}>
         <span className="card-title">{routine.name}</span>
         <span className="muted">
-          {plural(routine.exercises.length, 'exercise')}
-          {lastDone.has(routine.id) ? ` · last done ${formatDate(lastDone.get(routine.id)!)}` : ' · not done yet'}
+          {plural(routine.exercises.length, 'ejercicio')}
+          {lastDone.has(routine.id) ? ` · último: ${formatDate(lastDone.get(routine.id)!)}` : ' · sin hacer todavía'}
         </span>
       </button>
       {!routine.archived && (
         <button className="btn primary" onClick={() => start(routine)}>
-          {draft?.routineId === routine.id ? 'Resume' : 'Start'}
+          {draft?.routineId === routine.id ? 'Continuar' : 'Empezar'}
         </button>
       )}
     </li>
@@ -53,24 +53,24 @@ export function RoutineList() {
 
   return (
     <Screen
-      title="Routines"
+      title="Rutinas"
       action={
         <a className="btn small" href="#/routines/new">
-          + New
+          + Nueva
         </a>
       }
     >
       <BackupReminder />
       {draft && draftRoutine && (
         <a className="banner" href={`#/workout/${draft.routineId}`}>
-          Workout in progress: <strong>{draftRoutine.name}</strong> — tap to resume
+          Entrenamiento en curso: <strong>{draftRoutine.name}</strong> — toca para continuar
         </a>
       )}
       {active.length === 0 ? (
-        <EmptyState title="No routines yet">
-          <p className="muted">Create your first routine to start tracking your workouts.</p>
+        <EmptyState title="Todavía no hay rutinas">
+          <p className="muted">Crea tu primera rutina para empezar a registrar tus entrenamientos.</p>
           <a className="btn primary" href="#/routines/new">
-            Create routine
+            Crear rutina
           </a>
         </EmptyState>
       ) : (
@@ -79,7 +79,7 @@ export function RoutineList() {
       {archived.length > 0 && (
         <>
           <button className="link" onClick={() => setShowArchived(!showArchived)}>
-            {showArchived ? 'Hide' : 'Show'} archived ({archived.length})
+            {showArchived ? 'Ocultar' : 'Mostrar'} archivadas ({archived.length})
           </button>
           {showArchived && <ul className="list">{archived.map(card)}</ul>}
         </>

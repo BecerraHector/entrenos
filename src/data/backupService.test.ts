@@ -37,7 +37,7 @@ describe('importBackup', () => {
     await saveRoutine(makeRoutine({ id: 'local' }))
     const before = await readAllData()
     const result = await importBackup('{"format":"something-else"}', 'replace')
-    expect(result).toEqual({ ok: false, error: 'This file is not a Workout Tracker backup.' })
+    expect(result).toEqual({ ok: false, error: 'Este archivo no es un backup de Workout Tracker.' })
     expect(await readAllData()).toEqual(before)
   })
 })

@@ -16,8 +16,8 @@ describe('parseNumber', () => {
 
 describe('plural', () => {
   it('uses the singular only for exactly one', () => {
-    expect(plural(1, 'set')).toBe('1 set')
-    expect(plural(0, 'set')).toBe('0 sets')
-    expect(plural(3, 'set')).toBe('3 sets')
+    expect(plural(1, 'serie')).toBe('1 serie')
+    expect(plural(0, 'serie')).toBe('0 series')
+    expect(plural(3, 'rutina')).toBe('3 rutinas')
   })
 })
