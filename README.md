@@ -60,11 +60,22 @@ The installed app works offline and keeps its own storage, separate from Safari 
 
 ### Deploy to GitHub Pages (free)
 
-Build with the repository name as the base path, then publish `dist/` (for example, with the `gh-pages` branch or a Pages workflow):
+The repository includes `.github/workflows/deploy.yml`, which lints, tests, builds, and publishes the app on every push to `main`.
+
+1. Create a GitHub repository and push this project to its `main` branch.
+2. In the repository, open **Settings → Pages** and set **Source** to **GitHub Actions**.
+3. Push to `main` (or run the workflow manually from the **Actions** tab).
+4. Open `https://<user>.github.io/<repository-name>/` in Safari on your iPhone and add it to the home screen.
+
+The workflow sets the base path from the repository name automatically (`/` for a `<user>.github.io` repository). To build the same thing locally:
 
 ```bash
 BASE_PATH=/<repository-name>/ npm run build
 ```
+
+### Updates
+
+When a new version is deployed, the installed app shows a **"Nueva versión disponible"** prompt instead of reloading on its own. An in-progress workout is saved on every change, so updating never loses it. The current version is shown at the bottom of the Backup screen.
 
 Netlify, Vercel, or Cloudflare Pages also work with the default build (`npm run build`, output folder `dist`).
 
