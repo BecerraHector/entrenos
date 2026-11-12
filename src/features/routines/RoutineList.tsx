@@ -8,6 +8,7 @@ import { formatDate, plural } from '../../shared/format'
 import { go } from '../../shared/router'
 import { CountUp, EmptyState, Screen } from '../../shared/ui'
 import { BackupReminder } from '../backup/BackupReminder'
+import { StorageWarning } from '../backup/StorageWarning'
 
 export function RoutineList() {
   const routines = useLiveQuery(() => db.routines.toArray())
@@ -94,6 +95,7 @@ export function RoutineList() {
         </div>
       </section>
 
+      <StorageWarning />
       <BackupReminder />
       {draft && draftRoutine && (
         <a className="banner live" href={`#/workout/${draft.routineId}`}>

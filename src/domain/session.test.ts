@@ -50,9 +50,9 @@ describe('backup reminder', () => {
     expect(daysSinceBackup(undefined, now)).toBeUndefined()
   })
 
-  it('is due after 14 days, or when there is data and no backup yet', () => {
-    expect(isBackupDue('2026-03-01T12:00:00.000Z', true, now)).toBe(true)
-    expect(isBackupDue('2026-03-02T12:00:00.000Z', true, now)).toBe(false)
+  it('is due after 7 days, or when there is data and no backup yet', () => {
+    expect(isBackupDue('2026-03-08T12:00:00.000Z', true, now)).toBe(true)
+    expect(isBackupDue('2026-03-09T12:00:00.000Z', true, now)).toBe(false)
     expect(isBackupDue(undefined, true, now)).toBe(true)
   })
 

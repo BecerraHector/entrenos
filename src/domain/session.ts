@@ -12,7 +12,7 @@ export function buildSessionDraft(routine: Routine, previous: Session | undefine
   })
 }
 
-export const BACKUP_REMINDER_DAYS = 14
+export const BACKUP_REMINDER_DAYS = 7
 const DAY_MS = 24 * 60 * 60 * 1000
 
 export function daysSinceBackup(lastExportAt: string | undefined, now: Date): number | undefined {

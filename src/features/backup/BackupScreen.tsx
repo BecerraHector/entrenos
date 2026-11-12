@@ -5,12 +5,10 @@ import { importBackup, type ImportMode } from '../../data/backupService'
 import { getLastExportAt, readAllData, setLastExportAt } from '../../data/db'
 import { createBackup } from '../../domain/backup'
 import { formatDate, plural } from '../../shared/format'
+import { isStandalone } from '../../shared/standalone'
 import { Screen } from '../../shared/ui'
 
 type Message = { kind: 'ok' | 'error'; text: string } | null
-
-const isStandalone = () =>
-  window.matchMedia('(display-mode: standalone)').matches || (navigator as Navigator & { standalone?: boolean }).standalone === true
 
 export function BackupScreen() {
   // Data is preloaded so the share sheet opens directly from the tap (iOS requires a user gesture).
@@ -126,9 +124,9 @@ export function BackupScreen() {
           </>
         )}
         {!isStandalone() && (
-          <p className="muted small">
-            Consejo: instala la app desde Safari con <strong>Compartir → Agregar a inicio</strong>. Las apps instaladas conservan sus datos
-            de forma más confiable que las pestañas del navegador.
+          <p className="warning-text small">
+            <strong>Importante:</strong> desde una pestaña de Safari, tus datos se pueden borrar si no abres la app durante 7 días. Instálala con{' '}
+            <strong>Compartir → Agregar a inicio</strong>: las apps instaladas no tienen ese límite.
           </p>
         )}
       </section>

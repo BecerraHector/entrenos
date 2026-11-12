@@ -8,7 +8,7 @@ A local-first Progressive Web App (PWA) with a Spanish user interface to create 
 - **Workouts**: start a routine, log reps and weight per set, and see what you did last time. Progress is saved on every change, so closing the app mid-workout loses nothing.
 - **History**: every finished workout, with duration, completed sets, and volume.
 - **Progress**: chart per exercise of best weight, best reps (for bodyweight exercises), or volume.
-- **Backup**: export everything to a `.json` file (share sheet → *Save to Files* / iCloud Drive) and import it later in **Merge** (no duplicates) or **Replace** mode. A reminder appears when the last backup is older than 14 days.
+- **Backup**: export everything to a `.json` file (share sheet → *Save to Files* / iCloud Drive) and import it later in **Merge** (no duplicates) or **Replace** mode. A reminder appears when the last backup is older than 7 days.
 
 ## Tech stack
 
@@ -72,7 +72,7 @@ Netlify, Vercel, or Cloudflare Pages also work with the default build (`npm run 
 
 - Data lives in the browser storage of the installed app on your device. **Deleting the home screen icon deletes its data.**
 - Data belongs to the URL the app was installed from. If you move the app to a new URL or a new iPhone, export a backup first and import it in the new installation.
-- Export a backup regularly (the app reminds you every 14 days) and keep it in iCloud Drive.
+- Export a backup regularly (the app reminds you every 7 days) and keep it in iCloud Drive.
 
 ## Backup format
 
